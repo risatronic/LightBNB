@@ -9,9 +9,9 @@ INSERT INTO properties (owner_id, title, description, thumbnail_photo_url, cover
 
 
 INSERT INTO reservations (start_date, end_date, property_id, guest_id) VALUES 
-(1, '2018-06-04T07:00:00.000Z', '2018-06-09T07:00:00.000Z', 1, 3), 
-(2, '2019-07-04T07:00:00.000Z', '2019-08-01T07:00:00.000Z', 2, 1),
-(3, '2020-04-17T07:00:00.000Z', '2020-05-17T07:00:00.000Z', 3, 2);
+('2018-06-04T07:00:00.000Z', '2018-06-09T07:00:00.000Z', 1, 3), 
+('2019-07-04T07:00:00.000Z', '2019-08-01T07:00:00.000Z', 2, 1),
+('2020-04-17T07:00:00.000Z', '2020-05-17T07:00:00.000Z', 3, 2);
 
 
 INSERT INTO property_reviews (guest_id, property_id, reservation_id, rating, message) VALUES 
