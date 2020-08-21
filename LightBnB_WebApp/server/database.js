@@ -39,7 +39,7 @@ exports.getUserWithId = getUserWithId;
 
 /**
  * Add a new user to the database.
- * @param {{name: string, password: string, email: string}} user
+ * @param user {{name: string, password: string, email: string}}
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser = function(user) {
@@ -107,26 +107,33 @@ const getAllProperties = function(options, limit = 10) {
         queryString += 'AND ';
       }
 
-      if (options[option] === options.city) {
-        queryParams.push(`%${options.city}%`);
+      switch (options[option]) {
+      case options.city:
+        queryParams.push(`%${options[option]}%`);
         queryString += `city LIKE $${queryParams.length} `;
-      } else if (options[option] === options.owner_id) {
-        queryParams.push(options.owner_id);
+        break;
+      case options.owner_id:
+        queryParams.push(options[option]);
         queryString += `owner_id = $${queryParams.length} `;
-      } else if (options[option] === options.minimum_price_per_night) {
-        queryParams.push(options.minimum_price_per_night * 100);
+        break;
+      case options.minimum_price_per_night:
+        queryParams.push(options[option] * 100);
         queryString += `cost_per_night >= $${queryParams.length} `;
-      } else if (options[option] === options.maximum_price_per_night) {
-        queryParams.push(options.maximum_price_per_night * 100);
+        break;
+      case options.maximum_price_per_night:
+        queryParams.push(options[option] * 100);
         queryString += `cost_per_night <= $${queryParams.length} `;
+        break;
+      default:
+        break;
       }
     }
-
   }
+
   queryString += 'GROUP BY properties.id ';
 
   if (options.minimum_rating) {
-    queryParams.push(parseInt(options.minimum_rating, 10));
+    queryParams.push(options.minimum_rating);
     queryString += `HAVING AVG(property_reviews.rating) >= $${queryParams.length} `;
   }
 
@@ -136,6 +143,8 @@ const getAllProperties = function(options, limit = 10) {
   ORDER BY cost_per_night
   LIMIT $${queryParams.length}
   `;
+
+  console.log(queryString, queryParams);
 
   return pool.query(queryString, queryParams)
     .then(res => res.rows);
@@ -153,15 +162,12 @@ const addProperty = function(property) {
   let queryString = 'INSERT INTO properties (';
 
   for (const key in property) {
-    if (key === 'owner_id') {
-      queryString += `${key}) `;
-    } else {
-      queryString += `${key}, `;
-    }
+    queryString += `${key}, `;
     values.push(`${property[key]}`);
   }
-
-  queryString += 'VALUES (';
+  queryString = queryString.slice(0, -2);
+  console.log(queryString);
+  queryString += ') VALUES (';
 
   for (const value of values) {
     const num = values.indexOf(value) + 1;
