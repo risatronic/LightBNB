@@ -166,7 +166,6 @@ const addProperty = function(property) {
     values.push(`${property[key]}`);
   }
   queryString = queryString.slice(0, -2);
-  console.log(queryString);
   queryString += ') VALUES (';
 
   for (const value of values) {
